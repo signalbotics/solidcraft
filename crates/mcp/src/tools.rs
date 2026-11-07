@@ -1006,7 +1006,9 @@ fn dispatch(b: &mut dyn Backend, name: &str, a: &Map<String, Value>) -> Result<V
             p["expression"] = parameter_value(a)?;
             exec(b, "parameters.change", p)
         }
-        "export" => exec(b, "file.export", pick(a, &["path", "format", "bodies", "mesh_prefix", "effort", "velocity", "mimic", "collision"])),
+        "export" => {
+            exec(b, "file.export", pick(a, &["path", "format", "bodies", "mesh_prefix", "place_meshes", "effort", "velocity", "mimic", "collision"]))
+        }
         "crash_reports" => match a.get("id") {
             Some(_) => exec(b, "diagnostics.crash_report", pick(a, &["id"])),
             None => exec(b, "diagnostics.crash_reports", pick(a, &["limit"])),
@@ -1214,7 +1216,9 @@ fn batch_step(step: &Value) -> Result<(String, Value, Option<Narrow>), String> {
         "inspect_design" => mapped("document.inspect", json!({"measure": a.get("measure").and_then(Value::as_bool).unwrap_or(true)})),
         "undo" => mapped("edit.undo", json!({})),
         "redo" => mapped("edit.redo", json!({})),
-        "export" => mapped("file.export", pick(a, &["path", "format", "bodies", "mesh_prefix", "effort", "velocity", "mimic", "collision"])),
+        "export" => {
+            mapped("file.export", pick(a, &["path", "format", "bodies", "mesh_prefix", "place_meshes", "effort", "velocity", "mimic", "collision"]))
+        }
         "save" => mapped("file.save", pick(a, &["path", "format"])),
         "open" => mapped("doc.open", pick(a, &["path", "up", "names"])),
         "new_design" => mapped("file.new", pick(a, &["name"])),
